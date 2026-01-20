@@ -4,11 +4,27 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
-datasource db {
-  provider = "postgresql"
+generator client {
+  provider = "prisma-client-id"
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  chatId    String   // ID користувача в Telegram
+  items     String   // Список товарів (JSON рядок)
+  status    String   @default("pending") // pending, completed, cancelled
+  createdAt DateTime @default(now())
+}
+
+model InventoryLog {
+  id        Int      @id @default(autoincrement())
+  item      String   // Назва (вугілля, тютюн)
+  amount    Float
+  unit      String   // кг, шт
+  createdAt DateTime @default(now())
 }
